@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Pass the Pigs!</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <script src="pigs.js" defer></script>
+</head>
+
+<body>
+  <div id="gameBoard" class="w3-container">
+    <h1 class="w3-panel">Pass the Pigs!</h1>
+
+    <!-- Top row -->
+    <div class="w3-row w3-container">
+
+      <!-- Player 0 -->
+      <div class="w3-half w3-container w3-margin-bottom">
+        <div id="player0" class="w3-card w3-container w3-dark-gray w3-round-large">
+          <h2 id="player0Heading">Player 0</h2>
+          <div class="w3-row">
+            <div class="w3-half">
+              <p id="player0HandScore">Score:</p>
+            </div>
+            <div class="w3-half">
+              <p id="player0TotalScore">Total score:</p>
+            </div>
+          </div>
+          <div><span id="player0Pig1" class="w3-tag w3-xxlarge w3-pale-red w3-margin w3-round-large">/</span><span
+              id="player0Pig2" class="w3-tag w3-xxlarge w3-pale-red w3-margin w3-round-large">/</span></div>
+          <div class="w3-container w3-margin-bottom">
+            <button id="player0RollButton" class="w3-button w3-round-large w3-green" onclick="handleClick(this.id)">Roll
+            </button>
+            <button id="player0PassButton" class="w3-button w3-round-large w3-red" onclick="handleClick(this.id)">Pass
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- end Player 0 -->
+
+      <!-- Player 1 -->
+      <div class="w3-half w3-container w3-margin-bottom">
+        <div id="player1" class="w3-card w3-container w3-light-gray w3-round-large">
+          <h2 id="player1Heading">Player 1</h2>
+          <div class="w3-row">
+            <div class="w3-half">
+              <p id="player1HandScore">Score:</p>
+            </div>
+            <div class="w3-half">
+              <p id="player1TotalScore">Total score:</p>
+            </div>
+          </div>
+          <div><span id="player1Pig1" class="w3-tag w3-xxlarge w3-pale-red w3-margin w3-round-large">/</span><span
+              id="player1Pig2" class="w3-tag w3-xxlarge w3-pale-red w3-margin w3-round-large">/</span></div>
+          <div class="w3-container w3-margin-bottom">
+            <button id="player1RollButton" class="w3-button w3-round-large w3-green" onclick="handleClick(this.id)">Roll
+            </button>
+            <button id="player1PassButton" class="w3-button w3-round-large w3-red" onclick="handleClick(this.id)">Pass
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- end Player 1 -->
+
+    </div>
+    <!-- end Top row -->
+
+    <!-- Bottom row-->
+    <div class="w3-row w3-container">
+
+      <!-- Player 2 -->
+      <div class="w3-half w3-container w3-margin-bottom">
+        <div id="player2" class="w3-card w3-container w3-light-gray w3-round-large">
+          <h2 id="player2Heading">Player 2</h2>
+          <div class="w3-row">
+            <div class="w3-half">
+              <p id="player2HandScore">Score:</p>
+            </div>
+            <div class="w3-half">
+              <p id="player2TotalScore">Total score:</p>
+            </div>
+          </div>
+          <div><span id="player2Pig1" class="w3-tag w3-xxlarge w3-pale-red w3-margin w3-round-large">/</span><span
+              id="player2Pig2" class="w3-tag w3-xxlarge w3-pale-red w3-margin w3-round-large">/</span></div>
+          <div class="w3-container w3-margin-bottom">
+            <button id="player2RollButton" class="w3-button w3-round-large w3-green" onclick="handleClick(this.id)">Roll
+            </button>
+            <button id="player2PassButton" class="w3-button w3-round-large w3-red" onclick="handleClick(this.id)">Pass
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- end Player 2 -->
+
+      <!-- Player 3 -->
+      <div class="w3-half w3-container w3-margin-bottom">
+        <div id="player3" class="w3-card w3-container w3-light-gray w3-round-large">
+          <h2 id="player3Heading">Player 3</h2>
+          <div class="w3-row">
+            <div class="w3-half">
+              <p id="player3HandScore">Score:</p>
+            </div>
+            <div class="w3-half">
+              <p id="player3TotalScore">Total score:</p>
+            </div>
+          </div>
+          <div><span id="player3Pig1" class="w3-tag w3-xxlarge w3-pale-red w3-margin w3-round-large">/</span><span
+              id="player3Pig2" class="w3-tag w3-xxlarge w3-pale-red w3-margin w3-round-large">/</span></div>
+          <div class="w3-container w3-margin-bottom">
+            <button id="player3RollButton" class="w3-button w3-round-large w3-green" onclick="handleClick(this.id)">Roll
+            </button>
+            <button id="player3PassButton" class="w3-button w3-round-large w3-red" onclick="handleClick(this.id)">Pass
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- end Player 3 -->
+
+    </div>
+    <!-- end Bottom row -->
+
+    <!-- Replay button -->
+    <div id="replay" class="w3-row w3-container w3-hide">
+      <button id='replayButton' class="w3-button w3-block w3-teal" onclick="handleClick(this.id)">Replay</button>
+    </div>
+  </div>
+</body>
+
+</html>
