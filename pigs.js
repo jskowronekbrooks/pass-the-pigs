@@ -24,19 +24,15 @@ const show = 'w3-show'
 
 let playerNumber = 0
 let initialRoll = true
-const winningNumber = 20
+const winningNumber = 50
 
 document.addEventListener('DOMContentLoaded', function() {
-    for (let i = 0; i < 4; i++) {
-        if (i == 0) {
-            updateButton(i, rollID, true)
-            updateButton(i, passID, false)
-        }
-        else {
-            updateButton(i, rollID, false)
-            updateButton(i, passID, false)
-        }
+    for (let i = 1; i < 4; i++) {
+        updateButton(i, rollID, false)
+        updateButton(i, passID, false)
     }
+    updateButton(0, rollID, true)
+    updateButton(0, passID, false)
     initialRoll = false
 }) 
 
