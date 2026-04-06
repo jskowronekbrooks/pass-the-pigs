@@ -38,17 +38,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function handleActiveButtons(playerNum) {
     if (initialRoll) {
-        console.log('initial roll')
         for (let i of playerID) {
-            console.log('for loop')
             if (i == `player${playerNum}`) {
-                console.log('first instance')
-                console.log(i)
                 updateButton(playerID.indexOf(i), rollID, true)
                 updateButton(playerID.indexOf(i), passID, false)
             }
             else {
-                console.log('else')
                 updateButton(playerID.indexOf(i), rollID, false)
                 updateButton(playerID.indexOf(i), passID, false)
             }
@@ -61,18 +56,11 @@ function handleActiveButtons(playerNum) {
 
 function updateButton(player, element, enabled) {
     let buttonElement = document.getElementById(element[playerID.indexOf(`player${player}`)])
-    console.log(player)
-    console.log(element)
-    console.log(playerID.indexOf(`player${player}`))
-    console.log(element[playerID.indexOf(`player${player}`)])
-    console.log(buttonElement)
 
     if (enabled) {
-        console.log('enabled')
         buttonElement.disabled = false
     }
     else {
-        console.log('disabled')
         buttonElement.disabled = true
     }
 }
@@ -107,7 +95,6 @@ function reset() {
         document.getElementById(`player${i}Pig1`).innerHTML = `/`
         document.getElementById(`player${i}Pig2`).innerHTML = `/`
     }
-    console.log('reset')
     initialRoll = true
     handleActiveButtons(0)
 }
