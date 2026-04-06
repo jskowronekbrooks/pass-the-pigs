@@ -20,16 +20,70 @@ const backgroundWin = 'w3-yellow'
 const hide = 'w3-hide'
 const show = 'w3-show'
 
-// Counters
-
-let playerNumber = 0
-
 // Other
 
-const winningNumber = 100
+let playerNumber = 0
+let initialRoll = true
+const winningNumber = 20
+
+document.addEventListener('DOMContentLoaded', function() {
+    for (let i = 0; i < 4; i++) {
+        if (i == 0) {
+            updateButton(i, rollID, true)
+            updateButton(i, passID, false)
+        }
+        else {
+            updateButton(i, rollID, false)
+            updateButton(i, passID, false)
+        }
+    }
+    initialRoll = false
+}) 
+
+function handleActiveButtons(playerNum) {
+    if (initialRoll) {
+        console.log('initial roll')
+        for (let i of playerID) {
+            console.log('for loop')
+            if (i == `player${playerNum}`) {
+                console.log('first instance')
+                console.log(i)
+                updateButton(playerID.indexOf(i), rollID, true)
+                updateButton(playerID.indexOf(i), passID, false)
+            }
+            else {
+                console.log('else')
+                updateButton(playerID.indexOf(i), rollID, false)
+                updateButton(playerID.indexOf(i), passID, false)
+            }
+        }
+    }
+    else {
+        updateButton(playerNum, passID, true)
+    }
+}
+
+function updateButton(player, element, enabled) {
+    let buttonElement = document.getElementById(element[playerID.indexOf(`player${player}`)])
+    console.log(player)
+    console.log(element)
+    console.log(playerID.indexOf(`player${player}`))
+    console.log(element[playerID.indexOf(`player${player}`)])
+    console.log(buttonElement)
+
+    if (enabled) {
+        console.log('enabled')
+        buttonElement.disabled = false
+    }
+    else {
+        console.log('disabled')
+        buttonElement.disabled = true
+    }
+}
+
 
 function updateCSS(initial, updated, id, removeOnly) { 
-    if (removeOnly == true) {
+    if (removeOnly) {
         document.getElementById(id).classList.remove(initial)
     }
     else {
@@ -57,12 +111,16 @@ function reset() {
         document.getElementById(`player${i}Pig1`).innerHTML = `/`
         document.getElementById(`player${i}Pig2`).innerHTML = `/`
     }
-
+    console.log('reset')
+    initialRoll = true
+    handleActiveButtons(0)
 }
 
 function gameOver(playerNum) {
     updateCSS(backgroundDark, backgroundWin, playerID[playerNum])
     updateCSS(hide, show, replayButton)
+    updateButton(playerNum, rollID, false)
+    updateButton(playerNum, passID, false)
 }
 
 function getScore(roll1, roll2, scoring = gameScoring) {
@@ -113,6 +171,7 @@ function rollPigs(playerNum) {
     let totalScoreElement = document.getElementById(`player${playerNum}TotalScore`)
     let totalScore = parseInt(totalScoreElement.textContent.replace('Total Score: ', ''))
 
+    handleActiveButtons(playerNum)
 
     if (isNaN(totalScore)) {
         totalScore = 0
@@ -137,6 +196,7 @@ function rollPigs(playerNum) {
     if ((totalScore + newScore) >= winningNumber) {
         gameOver(playerNum)
     }
+    initialRoll = false
 }
 
 function changeActivePlayer(playerNum) {
@@ -169,6 +229,8 @@ function changeActivePlayer(playerNum) {
     }
     playerNum++
     updateCSS(backgroundLight, backgroundDark, playerID[playerNum])
+    initialRoll = true
+    handleActiveButtons(playerNum)
 }
 
 function handleClick(id) {
