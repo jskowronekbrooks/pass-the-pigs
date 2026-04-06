@@ -110,8 +110,12 @@ function getScore(roll1, roll2, scoring = gameScoring) {
     let rollValue = 0
 
     //Check if both rolls are the same (not either a dot or no dot) ie both rolls are 'Razorback'
-    if ((roll1 in scoring) && (roll2 in scoring)) {
+    if ((roll1 in scoring) && (roll2 in scoring) && (roll1 == roll2)) {
         rollValue = (scoring[roll1] + scoring[roll2]) * 2
+    }
+
+    else if ((roll1 in scoring) && (roll2 in scoring) && (roll1 !== roll2)) {
+        rollValue = scoring[roll1] + scoring[roll2]
     }
 
     //Check if either roll isn't dot or no dot
