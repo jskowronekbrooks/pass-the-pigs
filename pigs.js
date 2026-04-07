@@ -9,6 +9,7 @@ const rollID = ['player0RollButton', 'player1RollButton', 'player2RollButton', '
 const passID = ['player0PassButton', 'player1PassButton', 'player2PassButton', 'player3PassButton']
 const playerID = ['player0', 'player1', 'player2', 'player3']
 const handScore = ['player0HandScore', 'player1HandScore', 'player2HandScore', 'player3HandScore']
+const totalScore = ['player0TotalScore', 'player1TotalScore', 'player2TotalScore', 'player3TotalScore']
 const replayButton = 'replay'
 const innerReplayButton = 'replayButton'
 
@@ -79,8 +80,8 @@ function updateCSS(initial, updated, id, removeOnly) {
 function reset() { 
     updateCSS(show, hide, replayButton)
     for (let i = 0; i < playerID.length; i++) {
-        let score = document.getElementById(`player${i}HandScore`)
-        let total = document.getElementById(`player${i}TotalScore`)
+        let score = document.getElementById(handScore[i])
+        let total = document.getElementById(totalScore[i])
 
         score.textContent = 'Score:'
         total.textContent = 'Total Score:'
@@ -153,15 +154,15 @@ function rollPigs(playerNum) {
     let firstRoll = roll(gameOdds)
     let secondRoll = roll(gameOdds)
     let score = getScore(firstRoll, secondRoll)
-    let scoreElement = document.getElementById(`player${playerNum}HandScore`)
+    let scoreElement = document.getElementById(handScore[playerNum])
     let previousScore = parseInt(scoreElement.textContent.replace("Score: ", ""))
-    let totalScoreElement = document.getElementById(`player${playerNum}TotalScore`)
-    let totalScore = parseInt(totalScoreElement.textContent.replace('Total Score: ', ''))
+    let totalScoreElement = document.getElementById(totalScore[playerNum])
+    let totalScoreValue = parseInt(totalScoreElement.textContent.replace('Total Score: ', ''))
 
     handleActiveButtons(playerNum)
 
-    if (isNaN(totalScore)) {
-        totalScore = 0
+    if (isNaN(totalScoreValue)) {
+        totalScoreValue = 0
     }
 
     if (!previousScore) {
@@ -180,32 +181,32 @@ function rollPigs(playerNum) {
     document.getElementById(`player${playerNum}Pig1`).innerHTML = firstRoll
     document.getElementById(`player${playerNum}Pig2`).innerHTML = secondRoll
 
-    if ((totalScore + newScore) >= winningNumber) {
+    if ((totalScoreValue + newScore) >= winningNumber) {
         gameOver(playerNum)
     }
     initialRoll = false
 }
 
 function changeActivePlayer(playerNum) {
-    let handScoreElement = document.getElementById(`player${playerNum}HandScore`)
-    let handScore = parseInt(handScoreElement.textContent.replace('Score: ', ''))
-    let totalScoreElement = document.getElementById(`player${playerNum}TotalScore`)
-    let totalScore = parseInt(totalScoreElement.textContent.replace('Total Score: ', ''))
+    let handScoreElement = document.getElementById(handScore[playerNum])
+    let handScoreValue = parseInt(handScoreElement.textContent.replace('Score: ', ''))
+    let totalScoreElement = document.getElementById(totalScore[playerNum])
+    let totalScoreValue = parseInt(totalScoreElement.textContent.replace('Total Score: ', ''))
 
-    if (isNaN(totalScore)) {
-        totalScore = ''
+    if (isNaN(totalScoreValue)) {
+        totalScoreValue = ''
     }
 
-    if (isNaN(handScore)) {
-        totalScoreElement.textContent = `Total Score: ${totalScore}`
+    if (isNaN(handScoreValue)) {
+        totalScoreElement.textContent = `Total Score: ${totalScoreValue}`
     }
     else {
-        if (totalScore == '' && !isNaN(handScore)) {
-            totalScoreElement.textContent = `Total Score: ${handScore}`
+        if (totalScoreValue == '' && !isNaN(handScoreValue)) {
+            totalScoreElement.textContent = `Total Score: ${handScoreValue}`
             handScoreElement.textContent = `Score:`
         }
         else {
-            totalScoreElement.textContent = `Total Score: ${totalScore + handScore}`
+            totalScoreElement.textContent = `Total Score: ${totalScoreValue + handScoreValue}`
             handScoreElement.textContent = `Score:`
         }
     }
