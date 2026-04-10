@@ -25,7 +25,9 @@ const show = 'w3-show'
 
 let playerNumber = 0
 let initialRoll = true
+let shouldChangePlayer = true
 const winningNumber = 50
+const aiPlayerNum = 3
 
 document.addEventListener('DOMContentLoaded', function() {
     for (let i = 1; i < 4; i++) {
@@ -36,6 +38,23 @@ document.addEventListener('DOMContentLoaded', function() {
     updateButton(0, passID, false)
     initialRoll = false
 }) 
+
+function ai() {
+    let timesToRoll = Math.floor(Math.random() * 5) + 1
+
+    for (let i = 0; i < timesToRoll; i++) {
+        updateButton(aiPlayerNum, rollID, false)
+        updateButton(aiPlayerNum, passID, false)
+        let score = rollPigs(aiPlayerNum)
+        if (score == 'po' || score == 'over') {
+            shouldChangePlayer = false
+            break
+        }
+    }
+    if (shouldChangePlayer) {
+        changeActivePlayer(aiPlayerNum)
+    }
+}
 
 function handleActiveButtons(playerNum) {
     if (initialRoll) {
@@ -67,7 +86,7 @@ function updateButton(player, element, enabled) {
 }
 
 
-function updateCSS(initial, updated, id, removeOnly) { 
+function updateCSS(initial, updated, id, removeOnly) {
     if (removeOnly) {
         document.getElementById(id).classList.remove(initial)
     }
@@ -161,6 +180,12 @@ function rollPigs(playerNum) {
 
     handleActiveButtons(playerNum)
 
+    console.log(firstRoll)
+    console.log(secondRoll)
+    console.log(score)
+
+    document.getElementById(`player${playerNum}Pig1`).innerHTML = firstRoll
+    document.getElementById(`player${playerNum}Pig2`).innerHTML = secondRoll
     if (isNaN(totalScoreValue)) {
         totalScoreValue = 0
     }
@@ -177,14 +202,13 @@ function rollPigs(playerNum) {
     else {
         scoreElement.textContent = 'PIG OUT!'
         changeActivePlayer(playerNum)
+        return 'po'
     }
-    document.getElementById(`player${playerNum}Pig1`).innerHTML = firstRoll
-    document.getElementById(`player${playerNum}Pig2`).innerHTML = secondRoll
 
     if ((totalScoreValue + newScore) >= winningNumber) {
         gameOver(playerNum)
+        return 'over'
     }
-    initialRoll = false
 }
 
 function changeActivePlayer(playerNum) {
@@ -216,9 +240,16 @@ function changeActivePlayer(playerNum) {
         playerNum = -1
     }
     playerNum++
-    updateCSS(backgroundLight, backgroundDark, playerID[playerNum])
-    initialRoll = true
-    handleActiveButtons(playerNum)
+    if (playerNum == 3) {
+        updateCSS(backgroundLight, backgroundDark, playerID[playerNum])
+        ai()
+    } 
+    else {
+        updateCSS(backgroundLight, backgroundDark, playerID[playerNum])
+        initialRoll = true
+        handleActiveButtons(playerNum)
+        initialRoll = false
+    }
 }
 
 function handleClick(id) {
