@@ -25,7 +25,6 @@ const show = 'w3-show'
 
 let playerNumber = 0
 let initialRoll = true
-let shouldChangePlayer = true
 const winningNumber = 50
 const aiPlayerNum = 3
 
@@ -39,92 +38,10 @@ document.addEventListener('DOMContentLoaded', function() {
     initialRoll = false
 }) 
 
-function ai() {
-    let timesToRoll = Math.floor(Math.random() * 5) + 1
+/////////////
+// Backend //
+/////////////
 
-    for (let i = 0; i < timesToRoll; i++) {
-        updateButton(aiPlayerNum, rollID, false)
-        updateButton(aiPlayerNum, passID, false)
-        let score = rollPigs(aiPlayerNum)
-        if (score == 'po' || score == 'over') {
-            shouldChangePlayer = false
-            break
-        }
-    }
-    if (shouldChangePlayer) {
-        changeActivePlayer(aiPlayerNum)
-    }
-}
-
-function handleActiveButtons(playerNum) {
-    if (initialRoll) {
-        for (let i of playerID) {
-            if (i == `player${playerNum}`) {
-                updateButton(playerID.indexOf(i), rollID, true)
-                updateButton(playerID.indexOf(i), passID, false)
-            }
-            else {
-                updateButton(playerID.indexOf(i), rollID, false)
-                updateButton(playerID.indexOf(i), passID, false)
-            }
-        }
-    }
-    else {
-        updateButton(playerNum, passID, true)
-    }
-}
-
-function updateButton(player, element, enabled) {
-    let buttonElement = document.getElementById(element[playerID.indexOf(`player${player}`)])
-
-    if (enabled) {
-        buttonElement.disabled = false
-    }
-    else {
-        buttonElement.disabled = true
-    }
-}
-
-
-function updateCSS(initial, updated, id, removeOnly) {
-    if (removeOnly) {
-        document.getElementById(id).classList.remove(initial)
-    }
-    else {
-        document.getElementById(id).classList.remove(initial)
-        document.getElementById(id).classList.add(updated)
-    }
-}
-
-function reset() { 
-    updateCSS(show, hide, replayButton)
-    for (let i = 0; i < playerID.length; i++) {
-        let score = document.getElementById(handScore[i])
-        let total = document.getElementById(totalScore[i])
-
-        score.textContent = 'Score:'
-        total.textContent = 'Total Score:'
-
-        if (i == 0) {
-            updateCSS(backgroundLight, backgroundDark, playerID[i])
-        }
-        else {
-            updateCSS(backgroundDark, backgroundLight, playerID[i])
-        }
-        updateCSS(backgroundWin, null, playerID[i], true)
-        document.getElementById(`player${i}Pig1`).innerHTML = `/`
-        document.getElementById(`player${i}Pig2`).innerHTML = `/`
-    }
-    initialRoll = true
-    handleActiveButtons(0)
-}
-
-function gameOver(playerNum) {
-    updateCSS(backgroundDark, backgroundWin, playerID[playerNum])
-    updateCSS(hide, show, replayButton)
-    updateButton(playerNum, rollID, false)
-    updateButton(playerNum, passID, false)
-}
 
 function getScore(roll1, roll2, scoring = gameScoring) {
     let rollValue = 0
@@ -169,6 +86,107 @@ function roll(odds) {
     }
 }
 
+function handleActiveButtons(playerNum) {
+    console.log(playerNum)
+    if (initialRoll) {
+        for (let i of playerID) {
+            if (i == `player${playerNum}`) {
+                updateButton(playerID.indexOf(i), rollID, true)
+                updateButton(playerID.indexOf(i), passID, false)
+            }
+            else {
+                console.log('handle else')
+                updateButton(playerID.indexOf(i), rollID, false)
+                updateButton(playerID.indexOf(i), passID, false)
+            }
+        }
+    }
+    else {
+        updateButton(playerNum, passID, true)
+    }
+}
+
+function gameOver(playerNum) {
+    updateCSS(backgroundDark, backgroundWin, playerID[playerNum])
+    updateCSS(hide, show, replayButton)
+    disableAllButtons()
+}
+
+function updateButton(player, element, enabled) {
+    let buttonElement = document.getElementById(element[playerID.indexOf(`player${player}`)])
+
+    if (enabled) {
+        buttonElement.disabled = false
+    }
+    else {
+        buttonElement.disabled = true
+    }
+}
+
+function disableAllButtons() {
+    for (let i = 0; i < playerID.length; i++) {
+        updateButton(i, rollID, false)
+        updateButton(i, passID, false)
+    }
+}
+
+
+function updateCSS(initial, updated, id, removeOnly) {
+    if (removeOnly) {
+        document.getElementById(id).classList.remove(initial)
+    }
+    else {
+        document.getElementById(id).classList.remove(initial)
+        document.getElementById(id).classList.add(updated)
+    }
+}
+
+//////////////
+// Frontend //
+//////////////
+
+function ai() {
+    let timesToRoll = Math.floor(Math.random() * 5) + 1
+    let shouldChangePlayer = true
+
+    for (let i = 0; i < timesToRoll; i++) {
+        updateButton(aiPlayerNum, rollID, false)
+        updateButton(aiPlayerNum, passID, false)
+        let score = rollPigs(aiPlayerNum)
+        if (score == 'po' || score == 'over') {
+            shouldChangePlayer = false
+            break
+        }
+    }
+    console.log(shouldChangePlayer)
+    if (shouldChangePlayer) {
+        changeActivePlayer(aiPlayerNum)
+    }
+}
+
+function reset() { 
+    updateCSS(show, hide, replayButton)
+    for (let i = 0; i < playerID.length; i++) {
+        let score = document.getElementById(handScore[i])
+        let total = document.getElementById(totalScore[i])
+
+        score.textContent = 'Score:'
+        total.textContent = 'Total Score:'
+
+        if (i == 0) {
+            updateCSS(backgroundLight, backgroundDark, playerID[i])
+        }
+        else {
+            updateCSS(backgroundDark, backgroundLight, playerID[i])
+        }
+        updateCSS(backgroundWin, null, playerID[i], true)
+        document.getElementById(`player${i}Pig1`).innerHTML = `/`
+        document.getElementById(`player${i}Pig2`).innerHTML = `/`
+    }
+    initialRoll = true
+    handleActiveButtons(0)
+}
+
 function rollPigs(playerNum) {
     let firstRoll = roll(gameOdds)
     let secondRoll = roll(gameOdds)
@@ -178,11 +196,7 @@ function rollPigs(playerNum) {
     let totalScoreElement = document.getElementById(totalScore[playerNum])
     let totalScoreValue = parseInt(totalScoreElement.textContent.replace('Total Score: ', ''))
 
-    handleActiveButtons(playerNum)
-
-    console.log(firstRoll)
-    console.log(secondRoll)
-    console.log(score)
+    updateButton(playerNum, passID, true)
 
     document.getElementById(`player${playerNum}Pig1`).innerHTML = firstRoll
     document.getElementById(`player${playerNum}Pig2`).innerHTML = secondRoll
