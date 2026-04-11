@@ -87,7 +87,6 @@ function roll(odds) {
 }
 
 function handleActiveButtons(playerNum) {
-    console.log(playerNum)
     if (initialRoll) {
         for (let i of playerID) {
             if (i == `player${playerNum}`) {
@@ -95,7 +94,6 @@ function handleActiveButtons(playerNum) {
                 updateButton(playerID.indexOf(i), passID, false)
             }
             else {
-                console.log('handle else')
                 updateButton(playerID.indexOf(i), rollID, false)
                 updateButton(playerID.indexOf(i), passID, false)
             }
@@ -158,7 +156,6 @@ function ai() {
             break
         }
     }
-    console.log(shouldChangePlayer)
     if (shouldChangePlayer) {
         changeActivePlayer(aiPlayerNum)
     }
@@ -171,7 +168,7 @@ function reset() {
         let total = document.getElementById(totalScore[i])
 
         score.textContent = 'Score:'
-        total.textContent = 'Total Score:'
+        total.textContent = 'Total score:'
 
         if (i == 0) {
             updateCSS(backgroundLight, backgroundDark, playerID[i])
@@ -194,7 +191,7 @@ function rollPigs(playerNum) {
     let scoreElement = document.getElementById(handScore[playerNum])
     let previousScore = parseInt(scoreElement.textContent.replace("Score: ", ""))
     let totalScoreElement = document.getElementById(totalScore[playerNum])
-    let totalScoreValue = parseInt(totalScoreElement.textContent.replace('Total Score: ', ''))
+    let totalScoreValue = parseInt(totalScoreElement.textContent.replace('Total score: ', ''))
 
     updateButton(playerNum, passID, true)
 
@@ -229,22 +226,22 @@ function changeActivePlayer(playerNum) {
     let handScoreElement = document.getElementById(handScore[playerNum])
     let handScoreValue = parseInt(handScoreElement.textContent.replace('Score: ', ''))
     let totalScoreElement = document.getElementById(totalScore[playerNum])
-    let totalScoreValue = parseInt(totalScoreElement.textContent.replace('Total Score: ', ''))
+    let totalScoreValue = parseInt(totalScoreElement.textContent.replace('Total score: ', ''))
 
     if (isNaN(totalScoreValue)) {
         totalScoreValue = ''
     }
 
     if (isNaN(handScoreValue)) {
-        totalScoreElement.textContent = `Total Score: ${totalScoreValue}`
+        totalScoreElement.textContent = `Total score: ${totalScoreValue}`
     }
     else {
         if (totalScoreValue == '' && !isNaN(handScoreValue)) {
-            totalScoreElement.textContent = `Total Score: ${handScoreValue}`
+            totalScoreElement.textContent = `Total score: ${handScoreValue}`
             handScoreElement.textContent = `Score:`
         }
         else {
-            totalScoreElement.textContent = `Total Score: ${totalScoreValue + handScoreValue}`
+            totalScoreElement.textContent = `Total score: ${totalScoreValue + handScoreValue}`
             handScoreElement.textContent = `Score:`
         }
     }
