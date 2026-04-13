@@ -11,7 +11,6 @@ const playerID = ['player0', 'player1', 'player2', 'player3']
 const handScore = ['player0HandScore', 'player1HandScore', 'player2HandScore', 'player3HandScore']
 const totalScore = ['player0TotalScore', 'player1TotalScore', 'player2TotalScore', 'player3TotalScore']
 const replayButton = 'replay'
-const innerReplayButton = 'replayButton'
 
 // Classes
 
@@ -24,33 +23,34 @@ const show = 'w3-show'
 // Other
 
 let playerNumber = 0
-let initialRoll = true
 const winningNumber = 50
 const aiPlayerNum = 3
 
-document.addEventListener('DOMContentLoaded', function() {
+// Sets all buttons except for active player's roll button to inactive on page load
+document.addEventListener('DOMContentLoaded', function () {
     for (let i = 1; i < 4; i++) {
         updateButton(i, rollID, false)
         updateButton(i, passID, false)
     }
     updateButton(0, rollID, true)
     updateButton(0, passID, false)
-    initialRoll = false
-}) 
+
+})
 
 /////////////
 // Backend //
 /////////////
 
-
+// Finds what the score is given a roll
 function getScore(roll1, roll2, scoring = gameScoring) {
     let rollValue = 0
 
-    //Check if both rolls are the same (not either a dot or no dot) ie both rolls are 'Razorback'
+    //Check if both rolls are the same and high values: ie both rolls are 'Razorback'
     if ((roll1 in scoring) && (roll2 in scoring) && (roll1 == roll2)) {
         rollValue = (scoring[roll1] + scoring[roll2]) * 2
     }
 
+    // Check if both rolls are high values but not the same
     else if ((roll1 in scoring) && (roll2 in scoring) && (roll1 !== roll2)) {
         rollValue = scoring[roll1] + scoring[roll2]
     }
@@ -76,6 +76,7 @@ function getScore(roll1, roll2, scoring = gameScoring) {
     return rollValue
 }
 
+// Math to get random roll according to probabilities
 function roll(odds) {
     let random = Math.random()
     for (let [value, probability] of Object.entries(odds)) {
@@ -86,30 +87,32 @@ function roll(odds) {
     }
 }
 
+// Handles whether buttons are active or not
 function handleActiveButtons(playerNum) {
-    if (initialRoll) {
-        for (let i of playerID) {
-            if (i == `player${playerNum}`) {
-                updateButton(playerID.indexOf(i), rollID, true)
-                updateButton(playerID.indexOf(i), passID, false)
-            }
-            else {
-                updateButton(playerID.indexOf(i), rollID, false)
-                updateButton(playerID.indexOf(i), passID, false)
-            }
+    // Loops through each of the players
+    for (let i of playerID) {
+        // If the loop is on the active player, enable their roll but not their pass buttons
+        if (i == `player${playerNum}`) {
+            updateButton(playerID.indexOf(i), rollID, true)
+            updateButton(playerID.indexOf(i), passID, false)
         }
-    }
-    else {
-        updateButton(playerNum, passID, true)
+        // Disable all other player's buttons
+        else {
+            updateButton(playerID.indexOf(i), rollID, false)
+            updateButton(playerID.indexOf(i), passID, false)
+        }
     }
 }
 
+// Handles game over logic
 function gameOver(playerNum) {
     updateCSS(backgroundDark, backgroundWin, playerID[playerNum])
     updateCSS(hide, show, replayButton)
     disableAllButtons()
 }
 
+
+// Individual controll for enabling or disabling buttons given a player, the roll or pass button, and a state (enabled or disabled)
 function updateButton(player, element, enabled) {
     let buttonElement = document.getElementById(element[playerID.indexOf(`player${player}`)])
 
@@ -128,7 +131,7 @@ function disableAllButtons() {
     }
 }
 
-
+// Makes changes to an element's css
 function updateCSS(initial, updated, id, removeOnly) {
     if (removeOnly) {
         document.getElementById(id).classList.remove(initial)
@@ -143,33 +146,45 @@ function updateCSS(initial, updated, id, removeOnly) {
 // Frontend //
 //////////////
 
+// Handles running the AI
 function ai() {
+    // Random value for times it will try to roll
     let timesToRoll = Math.floor(Math.random() * 5) + 1
     let shouldChangePlayer = true
 
+    // Tries to roll timesToRoll times
     for (let i = 0; i < timesToRoll; i++) {
+        // Overrides the buttons being enabled by the rollPigs function
         updateButton(aiPlayerNum, rollID, false)
         updateButton(aiPlayerNum, passID, false)
+
         let score = rollPigs(aiPlayerNum)
+        // Checks whether the AI Pigs Out or won the game
         if (score == 'po' || score == 'over') {
             shouldChangePlayer = false
             break
         }
     }
+
+    // If they complete a turn without pigging out or winning, change player
     if (shouldChangePlayer) {
         changeActivePlayer(aiPlayerNum)
     }
 }
 
-function reset() { 
+// Resets the game after replay button is pressed
+function reset() {
     updateCSS(show, hide, replayButton)
+    // Loops through each of the players
     for (let i = 0; i < playerID.length; i++) {
         let score = document.getElementById(handScore[i])
         let total = document.getElementById(totalScore[i])
 
+        // Resets each of the player's score and total scores
         score.textContent = 'Score:'
         total.textContent = 'Total score:'
 
+        // Makes each of the player's backgrounds light except for player 0 (the new active player)
         if (i == 0) {
             updateCSS(backgroundLight, backgroundDark, playerID[i])
         }
@@ -177,10 +192,12 @@ function reset() {
             updateCSS(backgroundDark, backgroundLight, playerID[i])
         }
         updateCSS(backgroundWin, null, playerID[i], true)
+        // Changes the pig state of each of the player's to '/'
         document.getElementById(`player${i}Pig1`).innerHTML = `/`
         document.getElementById(`player${i}Pig2`).innerHTML = `/`
     }
-    initialRoll = true
+
+    // Activates the buttons for player 0
     handleActiveButtons(0)
 }
 
@@ -188,6 +205,8 @@ function rollPigs(playerNum) {
     let firstRoll = roll(gameOdds)
     let secondRoll = roll(gameOdds)
     let score = getScore(firstRoll, secondRoll)
+
+    // Gets both the score and total score elements for the active player and sees if they have outstanding score values
     let scoreElement = document.getElementById(handScore[playerNum])
     let previousScore = parseInt(scoreElement.textContent.replace("Score: ", ""))
     let totalScoreElement = document.getElementById(totalScore[playerNum])
@@ -195,8 +214,12 @@ function rollPigs(playerNum) {
 
     updateButton(playerNum, passID, true)
 
+    // Assigns the roll to the correct player
     document.getElementById(`player${playerNum}Pig1`).innerHTML = firstRoll
     document.getElementById(`player${playerNum}Pig2`).innerHTML = secondRoll
+
+    // Updates scoring logic
+    // Avoids NaN errors
     if (isNaN(totalScoreValue)) {
         totalScoreValue = 0
     }
@@ -204,34 +227,40 @@ function rollPigs(playerNum) {
     if (!previousScore) {
         previousScore = 0
     }
-    
+
     let newScore = previousScore + score
 
+    // Updates score if there is a score
     if (score > 0) {
         scoreElement.textContent = `Score: ${newScore}`
     }
+    // Else pig out
     else {
         scoreElement.textContent = 'PIG OUT!'
         changeActivePlayer(playerNum)
         return 'po'
     }
 
+    // Check to see if a player won
     if ((totalScoreValue + newScore) >= winningNumber) {
         gameOver(playerNum)
         return 'over'
     }
 }
 
+// Increments player
 function changeActivePlayer(playerNum) {
     let handScoreElement = document.getElementById(handScore[playerNum])
     let handScoreValue = parseInt(handScoreElement.textContent.replace('Score: ', ''))
     let totalScoreElement = document.getElementById(totalScore[playerNum])
     let totalScoreValue = parseInt(totalScoreElement.textContent.replace('Total score: ', ''))
 
+    // Handles NaN values
     if (isNaN(totalScoreValue)) {
         totalScoreValue = ''
     }
 
+    // Pushes new score if there is a score in the hand
     if (isNaN(handScoreValue)) {
         totalScoreElement.textContent = `Total score: ${totalScoreValue}`
     }
@@ -246,33 +275,43 @@ function changeActivePlayer(playerNum) {
         }
     }
 
+    // Changes the active player's background to light
     updateCSS(backgroundDark, backgroundLight, playerID[playerNum])
+
+    // Catches if the last player is active, and assigns it so that player 0 is active when incremented
     if (playerNum == 3) {
         playerNum = -1
     }
     playerNum++
+
+    // Runs the AI player on player 3
     if (playerNum == 3) {
         updateCSS(backgroundLight, backgroundDark, playerID[playerNum])
         ai()
-    } 
+    }
+
+    // Handles buttons and makes active player background dark
     else {
         updateCSS(backgroundLight, backgroundDark, playerID[playerNum])
-        initialRoll = true
         handleActiveButtons(playerNum)
-        initialRoll = false
     }
 }
 
 function handleClick(id) {
+    // Checks if the input is from a roll button
     if (rollID.includes(id)) {
         playerNumber = rollID.indexOf(id)
         rollPigs(playerNumber)
     }
+
+    // Or if it is from a pass button
     else if (passID.includes(id)) {
         playerNumber = passID.indexOf(id)
         changeActivePlayer(playerNumber)
     }
-    else if (id == innerReplayButton) {
-        reset()    
+
+    // Only other possible option is the reset button
+    else {
+        reset()
     }
 }
