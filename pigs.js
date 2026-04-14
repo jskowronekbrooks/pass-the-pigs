@@ -23,7 +23,7 @@ const show = 'w3-show'
 // Other
 
 let playerNumber = 0
-const winningNumber = 50
+const winningNumber = 100
 const aiPlayerNum = 3
 
 // Sets all buttons except for active player's roll button to inactive on page load
@@ -37,9 +37,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 })
 
-/////////////
-// Backend //
-/////////////
+///////////////
+/// Backend ///
+///////////////
 
 // Finds what the score is given a roll
 function getScore(roll1, roll2, scoring = gameScoring) {
@@ -142,9 +142,9 @@ function updateCSS(initial, updated, id, removeOnly) {
     }
 }
 
-//////////////
-// Frontend //
-//////////////
+////////////////
+/// Frontend ///
+////////////////
 
 // Handles running the AI
 function ai() {
@@ -250,6 +250,7 @@ function rollPigs(playerNum) {
 
 // Increments player
 function changeActivePlayer(playerNum) {
+    // Gets score elements
     let handScoreElement = document.getElementById(handScore[playerNum])
     let handScoreValue = parseInt(handScoreElement.textContent.replace('Score: ', ''))
     let totalScoreElement = document.getElementById(totalScore[playerNum])
@@ -265,17 +266,19 @@ function changeActivePlayer(playerNum) {
         totalScoreElement.textContent = `Total score: ${totalScoreValue}`
     }
     else {
+        // If there isn't a total score value but there is a hand score, assign the total score to the hand score
         if (totalScoreValue == '' && !isNaN(handScoreValue)) {
             totalScoreElement.textContent = `Total score: ${handScoreValue}`
             handScoreElement.textContent = `Score:`
         }
+
+        // Else add the total and hand scores
         else {
             totalScoreElement.textContent = `Total score: ${totalScoreValue + handScoreValue}`
             handScoreElement.textContent = `Score:`
         }
     }
 
-    // Changes the active player's background to light
     updateCSS(backgroundDark, backgroundLight, playerID[playerNum])
 
     // Catches if the last player is active, and assigns it so that player 0 is active when incremented
@@ -298,19 +301,17 @@ function changeActivePlayer(playerNum) {
 }
 
 function handleClick(id) {
-    // Checks if the input is from a roll button
+    // Roll button pressed
     if (rollID.includes(id)) {
         playerNumber = rollID.indexOf(id)
         rollPigs(playerNumber)
     }
-
-    // Or if it is from a pass button
+    // Pass button pressed
     else if (passID.includes(id)) {
         playerNumber = passID.indexOf(id)
         changeActivePlayer(playerNumber)
     }
-
-    // Only other possible option is the reset button
+    // Only other possible input option is the reset button
     else {
         reset()
     }
